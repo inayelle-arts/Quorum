@@ -1,0 +1,6 @@
+[submodule "Api"]
+	path = Api
+	url = git@github.com:inayelle-arts/Quorum-Api.git
+[submodule "Client"]
+	path = Client
+	url = git@github.com:inayelle-arts/Quorum-Client.git
