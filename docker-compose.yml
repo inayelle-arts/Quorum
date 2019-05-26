@@ -1,42 +1,86 @@
-version: '3.7'
+version: '2.1'
 
 services:
   gateway:
     container_name: Quorum_Gateway
-    image: nginx:alpine
+    build:
+      dockerfile: Gateway.Dockerfile
+      context: .
     networks:
       quorum_network:
-        ipv4_address: 172.20.20.254
-    volumes:
-      - ./gateway.conf:/etc/nginx/nginx.conf:ro
+        ipv4_address: 172.20.20.2
     depends_on:
-      - storage
-      - api
-      - client
+      data_api:
+        condition: service_started
+      identity_api:
+        condition: service_started
+      client:
+        condition: service_started
     ports:
       - 80:80
+        
+  message_bus:
+    container_name: Quorum_Message_Bus
+    image: rabbitmq:alpine
+    networks:
+      quorum_network:
+        ipv4_address: 172.20.20.3
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
-  storage:
-    container_name: Quorum_Storage
-    image: postgres:latest
+  data_storage:
+    container_name: Quorum_Data_Storage
+    image: postgres:alpine
     environment:
       POSTGRES_DB: quorum_prod_storage
       POSTGRES_USER: quorum_prod_user
       POSTGRES_PASSWORD: Q2JahkZRHtY2GC2hKdhE7V3mgca8mgKm3nkfRFPvFAZ7
     networks:
       quorum_network:
-        ipv4_address: 172.20.20.2
-
-  api:
-    container_name: Quorum_Api
+        ipv4_address: 172.20.20.4
+        
+  identity_storage:
+    container_name: Quorum_Identity_Storage
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: quorum_prod_identity_storage
+      POSTGRES_USER: quorum_prod_user
+      POSTGRES_PASSWORD: U5kJDt5LvnWcmdNd64RrYDeKYHphTjScg5R7fNx6
+    networks:
+      quorum_network:
+        ipv4_address: 172.20.20.5
+        
+  data_api:
+    container_name: Quorum_Data_Api
     build:
-      dockerfile: ../Api.Dockerfile
+      dockerfile: ../DataApi.Dockerfile
       context: ./Api
     networks:
       quorum_network:
-        ipv4_address: 172.20.20.3
+        ipv4_address: 172.20.20.6
     depends_on:
-      - storage
+      data_storage:
+        condition: service_started
+      message_bus:
+        condition: service_healthy
+        
+  identity_api:
+    container_name: Quorum_Identity_Api
+    build:
+      dockerfile: ../IdentityApi.Dockerfile
+      context: ./Api
+    restart: always
+    networks:
+      quorum_network:
+        ipv4_address: 172.20.20.7
+    depends_on:
+      identity_storage:
+        condition: service_started
+      message_bus:
+        condition: service_healthy
 
   client:
     container_name: Quorum_Client
@@ -45,9 +89,12 @@ services:
       context: ./Client
     networks:
       quorum_network:
-        ipv4_address: 172.20.20.4
+        ipv4_address: 172.20.20.8
     depends_on:
-      - api
+      data_api:
+        condition: service_started
+      identity_api:
+        condition: service_started
 
 networks:
   quorum_network:
