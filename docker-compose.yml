@@ -57,7 +57,7 @@ services:
     container_name: Quorum_Data_Api
     build:
       dockerfile: ../DataApi.Dockerfile
-      context: ./Api
+      context: ./Backend
     networks:
       quorum_network:
         ipv4_address: 172.20.20.6
@@ -71,7 +71,7 @@ services:
     container_name: Quorum_Identity_Api
     build:
       dockerfile: ../IdentityApi.Dockerfile
-      context: ./Api
+      context: ./Backend
     restart: always
     networks:
       quorum_network:
