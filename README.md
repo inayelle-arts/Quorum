@@ -4,7 +4,7 @@
  - Clone repostitory ```git clone git@github.com:inayelle-arts/Quorum.git``` (or via https)
  - Initialize submodules ```git submodule update --init --recursive```
  - Ensure that docker.service is running
- - Run ```docker-compose up --force-recreate --remove-orphans```
+ - Run ```docker-compose up --force-recreate --remove-orphans``` (build takes ~5 minutes)
  - Web application should be accessible on ```localhost:80```
  
  ## Description
@@ -13,13 +13,46 @@
  - DataApi
  - IdentityApi
  - Client
- The rest of services are hidden from outer world.
  
- As for now, applications consists of **seven** services:
- - ```Gateway``` - entrypoint for outer world (image: ```nginx:alpine```, set up with ```gateway.conf```)
- - ```Message bus``` - RabbitMQ messaging service (image: ```rabbitmq:alpine```)
- - ```Data storage``` - PostgreSQL data storage (image: ```postgres:alpine```)
- - ```Identity storage``` - PostgreSQL identity storage (image: ```postgres:alpine```)
- - ```Data API``` - NET Core 2.2 Web Api, manages the domain logic (from dockerfile)
- - ```Identity API``` - NET Core 2.2 Web Api, manages the user identity (from dockerfile)
- - ```Client``` - Angular 7 Frontend, provides web interface (from dockerfile)
+ The rest of services are hidden from the outer world.  
+ As for now, application consists of **seven** services:  
+ 
+#### ```Gateway```   
+Entrypoint for outer world.  
+Dockerfile: Gateway.Dockerfile  
+Base images:  
+ - ```nginx:alpine``` (proxy)  
+Config: ```gateway.conf```  
+ 
+#### ```Message bus```  
+RabbitMQ messaging service.  
+Image: ```rabbitmq:alpine```  
+
+#### ```Data storage```  
+PostgreSQL data storage, stores domain data  
+Image: ```postgres:alpine```  
+
+#### ```Identity storage```  
+PostgreSQL identity storage, stores user sensitive data  
+Image: ```postgres:alpine```  
+
+#### ```Data API```  
+NET Core 2.2 Web Api, deals with domain logic    
+Dockerfile: DataApi.Dockerfile    
+Base images:   
+ - mcr.microsoft.com/dotnet/core/aspnet:2.2 (serve)  
+ - mcr.microsoft.com/dotnet/core/sdk:2.2 (build)  
+ 
+#### ```Identity API```  
+NET Core 2.2 Web Api, deals with authentication  
+Dockerfile: DataApi.Dockerfile  
+Base images:   
+ - mcr.microsoft.com/dotnet/core/aspnet:2.2 (serve)  
+ - mcr.microsoft.com/dotnet/core/sdk:2.2 (build)  
+ 
+#### ```Client```  
+Angular 7 Frontend, provides web user interface  
+Dockerfile: Client.Dockerfile  
+Base images:  
+ - ```node:alpine``` (build)  
+ - ```nginx:alpine``` (serve)  
