@@ -19,40 +19,47 @@
  
 #### ```Gateway```   
 Entrypoint for outer world.  
-Dockerfile: Gateway.Dockerfile  
+Internal IP: 172.20.20.2  
+Dockerfile: [Gateway.Dockerfile](Gateway.Dockerfile)  
 Base images:  
  - ```nginx:alpine``` (proxy)  
-Config: ```gateway.conf```  
+Config: [gateway.conf](gateway.conf)  
  
 #### ```Message bus```  
 RabbitMQ messaging service.  
+Internal IP: 172.20.20.3  
 Image: ```rabbitmq:alpine```  
 
 #### ```Data storage```  
 PostgreSQL data storage, stores domain data  
-Image: ```postgres:alpine```  
+Internal IP: 172.20.20.4  
+Image: ```postgres:alpine```
 
 #### ```Identity storage```  
 PostgreSQL identity storage, stores user sensitive data  
+Internal IP: 172.20.20.5  
 Image: ```postgres:alpine```  
 
 #### ```Data API```  
 NET Core 2.2 Web Api, deals with domain logic    
-Dockerfile: DataApi.Dockerfile    
+Internal IP: 172.20.20.6   
+Dockerfile: [DataApi.Dockerfile](DataApi.Dockerfile)   
 Base images:   
- - mcr.microsoft.com/dotnet/core/aspnet:2.2 (serve)  
- - mcr.microsoft.com/dotnet/core/sdk:2.2 (build)  
+ - ```mcr.microsoft.com/dotnet/core/aspnet:2.2``` (serve)  
+ - ```mcr.microsoft.com/dotnet/core/sdk:2.2``` (build)  
  
 #### ```Identity API```  
 NET Core 2.2 Web Api, deals with authentication  
-Dockerfile: DataApi.Dockerfile  
+Internal IP: 172.20.20.7  
+Dockerfile: [Identity.Dockerfile](IdentityApi.Dockerfile)  
 Base images:   
- - mcr.microsoft.com/dotnet/core/aspnet:2.2 (serve)  
- - mcr.microsoft.com/dotnet/core/sdk:2.2 (build)  
+ - ```mcr.microsoft.com/dotnet/core/aspnet:2.2``` (serve)  
+ - ```mcr.microsoft.com/dotnet/core/sdk:2.2``` (build)  
  
 #### ```Client```  
-Angular 7 Frontend, provides web user interface  
-Dockerfile: Client.Dockerfile  
+Angular 7 Frontend, provides web user interface
+ Internal IP: 172.20.20.8  
+Dockerfile: [Client.Dockerfile](Client.Dockerfile)  
 Base images:  
  - ```node:alpine``` (build)  
  - ```nginx:alpine``` (serve)  
