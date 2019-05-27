@@ -20,7 +20,7 @@
 #### ```Gateway```   
 Entrypoint for outer world.  
 Internal IP: 172.20.20.2  
-Config: [gateway.conf](gateway.conf) 
+Config: [gateway.conf](gateway.conf)  
 Dockerfile: [Gateway.Dockerfile](Gateway.Dockerfile)  
 Base images:  
  - ```nginx:alpine``` (proxy)   
