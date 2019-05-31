@@ -1,6 +1,8 @@
 [submodule "Client"]
 	path = Client
 	url = git@github.com:inayelle-arts/Quorum-Client.git
+        branch=dev
 [submodule "Backend"]
 	path = Backend
 	url = git@github.com:inayelle-arts/Quorum-Backend.git
+        branch=dev
